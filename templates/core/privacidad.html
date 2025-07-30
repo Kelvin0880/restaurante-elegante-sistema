@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Política de Privacidad - Restaurante Elegante{% endblock %}
+
+{% block content %}
+<section class="seccion">
+    <div class="container">
+        <div class="privacidad-container">
+            <h1 class="seccion-titulo">Política de Privacidad</h1>
+            
+            <div class="privacidad-content">
+                <div class="privacidad-intro">
+                    <p class="lead">En Restaurante Elegante, respetamos tu privacidad y nos comprometemos a proteger tus datos personales. Esta política de privacidad explica cómo recopilamos, usamos y protegemos tu información.</p>
+                    <p><strong>Última actualización:</strong> {{ "now"|date:"d F Y" }}</p>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-info-circle"></i> 1. Información que Recopilamos</h2>
+                    <p>Recopilamos la siguiente información cuando interactúas con nuestro sitio web:</p>
+                    <ul>
+                        <li><strong>Información de cuenta:</strong> Nombre, apellidos, email, nombre de usuario cuando te registras</li>
+                        <li><strong>Información de contacto:</strong> Datos que proporcionas al contactarnos o hacer reservas</li>
+                        <li><strong>Información de pedidos:</strong> Historial de pedidos, preferencias gastronómicas</li>
+                        <li><strong>Información técnica:</strong> Dirección IP, tipo de navegador, páginas visitadas</li>
+                    </ul>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-user-shield"></i> 2. Cómo Usamos tu Información</h2>
+                    <p>Utilizamos tu información personal para:</p>
+                    <ul>
+                        <li>Gestionar tu cuenta y proporcionar nuestros servicios</li>
+                        <li>Procesar pedidos y reservas</li>
+                        <li>Enviarte comunicaciones importantes sobre tu cuenta</li>
+                        <li>Mejorar nuestros servicios y experiencia de usuario</li>
+                        <li>Cumplir con obligaciones legales</li>
+                    </ul>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-share-alt"></i> 3. Compartir Información</h2>
+                    <p>No vendemos, intercambiamos o transferimos tu información personal a terceros, excepto:</p>
+                    <ul>
+                        <li>Cuando sea necesario para proporcionar nuestros servicios</li>
+                        <li>Con proveedores de servicios confiables que nos ayudan a operar nuestro sitio web</li>
+                        <li>Cuando sea requerido por ley</li>
+                        <li>Para proteger nuestros derechos, propiedad o seguridad</li>
+                    </ul>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-lock"></i> 4. Seguridad de Datos</h2>
+                    <p>Implementamos medidas de seguridad apropiadas para proteger tu información personal:</p>
+                    <ul>
+                        <li>Encriptación SSL para todas las transmisiones de datos</li>
+                        <li>Acceso restringido a información personal</li>
+                        <li>Monitoreo regular de vulnerabilidades de seguridad</li>
+                        <li>Copias de seguridad regulares de datos</li>
+                    </ul>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-cookie-bite"></i> 5. Cookies</h2>
+                    <p>Utilizamos cookies para mejorar tu experiencia en nuestro sitio web:</p>
+                    <ul>
+                        <li><strong>Cookies esenciales:</strong> Necesarias para el funcionamiento del sitio</li>
+                        <li><strong>Cookies de rendimiento:</strong> Nos ayudan a entender cómo los usuarios interactúan con nuestro sitio</li>
+                        <li><strong>Cookies de funcionalidad:</strong> Recuerdan tus preferencias y configuraciones</li>
+                    </ul>
+                    <p>Puedes controlar el uso de cookies a través de la configuración de tu navegador.</p>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-user-cog"></i> 6. Tus Derechos</h2>
+                    <p>Como usuario, tienes los siguientes derechos:</p>
+                    <ul>
+                        <li><strong>Acceso:</strong> Solicitar una copia de los datos personales que tenemos sobre ti</li>
+                        <li><strong>Rectificación:</strong> Solicitar la corrección de información inexacta</li>
+                        <li><strong>Supresión:</strong> Solicitar la eliminación de tus datos personales</li>
+                        <li><strong>Portabilidad:</strong> Solicitar una copia de tus datos en formato estructurado</li>
+                        <li><strong>Oposición:</strong> Oponerte al procesamiento de tus datos personales</li>
+                    </ul>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-child"></i> 7. Menores de Edad</h2>
+                    <p>Nuestros servicios no están dirigidos a menores de 13 años. No recopilamos conscientemente información personal de menores de 13 años. Si descubrimos que hemos recopilado información de un menor de 13 años, la eliminaremos inmediatamente.</p>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-edit"></i> 8. Cambios a esta Política</h2>
+                    <p>Podemos actualizar esta política de privacidad ocasionalmente. Te notificaremos sobre cambios significativos publicando la nueva política en esta página y actualizando la fecha de "última actualización".</p>
+                </div>
+                
+                <div class="privacidad-section">
+                    <h2><i class="fas fa-envelope"></i> 9. Contacto</h2>
+                    <p>Si tienes preguntas sobre esta política de privacidad, puedes contactarnos:</p>
+                    <div class="contacto-info-privacidad">
+                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> privacidad@restauranteelegante.com</p>
+                        <p><i class="fas fa-phone"></i> <strong>Teléfono:</strong> +34 912 345 678</p>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong> Calle Elegante 123, 28001 Madrid, España</p>
+                    </div>
+                </div>
+                
+                <div class="privacidad-footer">
+                    <p>Al usar nuestro sitio web y servicios, aceptas los términos de esta política de privacidad.</p>
+                    <div class="privacidad-actions">
+                        <a href="{% url 'home' %}" class="btn btn-primario">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </a>
+                        <a href="{% url 'contacto' %}" class="btn btn-secundario">
+                            <i class="fas fa-envelope"></i> Contactar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.privacidad-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.privacidad-content {
+    background: var(--color-blanco);
+    padding: 3rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+    line-height: 1.7;
+}
+
+.privacidad-intro {
+    background: linear-gradient(135deg, var(--color-claro), #F0F8F0);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    border-left: 4px solid var(--color-primario);
+    margin-bottom: 2rem;
+}
+
+.privacidad-intro .lead {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--color-oscuro);
+    margin-bottom: 1rem;
+}
+
+.privacidad-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.privacidad-section:last-of-type {
+    border-bottom: none;
+}
+
+.privacidad-section h2 {
+    color: var(--color-oscuro);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.privacidad-section h2 i {
+    color: var(--color-primario);
+}
+
+.privacidad-section p {
+    color: var(--color-gris);
+    margin-bottom: 1rem;
+}
+
+.privacidad-section ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.privacidad-section li {
+    color: var(--color-gris);
+    margin-bottom: 0.5rem;
+}
+
+.privacidad-section li strong {
+    color: var(--color-oscuro);
+}
+
+.contacto-info-privacidad {
+    background: var(--color-claro);
+    padding: 1.5rem;
+    border-radius: var(--radio-borde);
+    border-left: 4px solid var(--color-info);
+}
+
+.contacto-info-privacidad p {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contacto-info-privacidad i {
+    color: var(--color-primario);
+    width: 20px;
+}
+
+.privacidad-footer {
+    background: linear-gradient(135deg, var(--color-oscuro), var(--color-secundario));
+    color: var(--color-blanco);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.privacidad-footer p {
+    color: var(--color-claro);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.privacidad-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .privacidad-content {
+        padding: 2rem;
+    }
+    
+    .privacidad-intro {
+        padding: 1.5rem;
+    }
+    
+    .privacidad-intro .lead {
+        font-size: 1.1rem;
+    }
+    
+    .privacidad-section h2 {
+        font-size: 1.3rem;
+    }
+    
+    .privacidad-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .privacidad-actions .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+</style>
+{% endblock %}

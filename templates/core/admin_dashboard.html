@@ -1,0 +1,457 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Administrativo - Restaurante Elegante{% endblock %}
+
+{% block content %}
+<section class="seccion">
+    <div class="container">
+        <h1 class="seccion-titulo">Dashboard Administrativo</h1>
+        
+        <!-- Estadísticas principales -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_pedidos }}</h3>
+                    <p>Total Pedidos</p>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ pedidos_pendientes }}</h3>
+                    <p>Pedidos Pendientes</p>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-success">
+                <div class="stat-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_platos }}</h3>
+                    <p>Platos en Menú</p>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-info">
+                <div class="stat-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ contactos_no_leidos }}</h3>
+                    <p>Mensajes Sin Leer</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="admin-content">
+            <!-- Pedidos recientes -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Pedidos Recientes</h2>
+                    <a href="{% url 'admin_pedidos' %}" class="btn btn-primario">Ver Todos</a>
+                </div>
+                
+                {% if pedidos_recientes %}
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in pedidos_recientes %}
+                                    <tr>
+                                        <td>#{{ pedido.id }}</td>
+                                        <td>{{ pedido.usuario.get_full_name|default:pedido.usuario.username }}</td>
+                                        <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <span class="estado-badge estado-{{ pedido.estado }}">
+                                                {{ pedido.get_estado_display }}
+                                            </span>
+                                        </td>
+                                        <td>€{{ pedido.total }}</td>
+                                        <td>
+                                            <form method="post" action="{% url 'actualizar_estado_pedido' pedido.id %}" class="estado-form">
+                                                {% csrf_token %}
+                                                <select name="estado" class="estado-select" onchange="this.form.submit()" aria-label="Cambiar estado del pedido">
+                                                    {% for value, label in pedido.ESTADOS %}
+                                                        <option value="{{ value }}" {% if pedido.estado == value %}selected{% endif %}>
+                                                            {{ label }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="no-data">No hay pedidos recientes.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Mensajes de contacto -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-comments"></i> Mensajes de Contacto</h2>
+                    <a href="{% url 'admin:core_contacto_changelist' %}" class="btn btn-secundario">Ver Todos</a>
+                </div>
+                
+                {% if contactos_recientes %}
+                    <div class="contactos-lista">
+                        {% for contacto in contactos_recientes %}
+                            <div class="contacto-item">
+                                <div class="contacto-header">
+                                    <h4>{{ contacto.nombre }}</h4>
+                                    <span class="contacto-fecha">{{ contacto.fecha_envio|date:"d/m/Y H:i" }}</span>
+                                </div>
+                                <p class="contacto-asunto"><strong>{{ contacto.asunto }}</strong></p>
+                                <p class="contacto-mensaje">{{ contacto.mensaje|truncatewords:20 }}</p>
+                                <div class="contacto-acciones">
+                                    <a href="mailto:{{ contacto.email }}" class="btn btn-sm btn-primario">
+                                        <i class="fas fa-reply"></i> Responder
+                                    </a>
+                                    <a href="{% url 'admin:core_contacto_change' contacto.id %}" class="btn btn-sm btn-secundario">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-data">No hay mensajes sin leer.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Enlaces rápidos -->
+        <div class="quick-links">
+            <h2>Enlaces Rápidos</h2>
+            <div class="links-grid">
+                <a href="{% url 'admin:core_plato_changelist' %}" class="quick-link">
+                    <i class="fas fa-utensils"></i>
+                    <span>Gestionar Platos</span>
+                </a>
+                <a href="{% url 'admin:core_categoria_changelist' %}" class="quick-link">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorías</span>
+                </a>
+                <a href="{% url 'admin:core_noticia_changelist' %}" class="quick-link">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Noticias</span>
+                </a>
+                <a href="{% url 'admin:auth_user_changelist' %}" class="quick-link">
+                    <i class="fas fa-users"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="{% url 'admin_pedidos' %}" class="quick-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Gestionar Pedidos</span>
+                </a>
+                <a href="{% url 'admin:index' %}" class="quick-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Panel Admin</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--color-blanco);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: var(--transicion);
+    border-left: 4px solid var(--color-primario);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-media);
+}
+
+.stat-card.stat-warning {
+    border-left-color: #FFC107;
+}
+
+.stat-card.stat-success {
+    border-left-color: var(--color-exito);
+}
+
+.stat-card.stat-info {
+    border-left-color: var(--color-info);
+}
+
+.stat-icon {
+    background: var(--color-primario);
+    color: var(--color-blanco);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-warning .stat-icon {
+    background: #FFC107;
+}
+
+.stat-success .stat-icon {
+    background: var(--color-exito);
+}
+
+.stat-info .stat-icon {
+    background: var(--color-info);
+}
+
+.stat-info h3 {
+    font-size: 2rem;
+    margin: 0;
+    color: var(--color-oscuro);
+}
+
+.stat-info p {
+    margin: 0;
+    color: var(--color-gris);
+    font-weight: 600;
+}
+
+.admin-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.admin-section {
+    background: var(--color-blanco);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.section-header h2 {
+    color: var(--color-oscuro);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.admin-table th {
+    background: var(--color-claro);
+    font-weight: 600;
+    color: var(--color-oscuro);
+}
+
+.estado-form {
+    margin: 0;
+}
+
+.estado-select {
+    padding: 4px 8px;
+    border: 1px solid #E5E5E5;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.contactos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contacto-item {
+    padding: 1rem;
+    border: 1px solid #E5E5E5;
+    border-radius: var(--radio-borde);
+    background: var(--color-claro);
+}
+
+.contacto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.contacto-header h4 {
+    margin: 0;
+    color: var(--color-oscuro);
+}
+
+.contacto-fecha {
+    font-size: 0.9rem;
+    color: var(--color-gris);
+}
+
+.contacto-asunto {
+    margin: 0.5rem 0;
+    color: var(--color-primario);
+}
+
+.contacto-mensaje {
+    margin: 0.5rem 0;
+    color: var(--color-gris);
+    font-size: 0.9rem;
+}
+
+.contacto-acciones {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.quick-links {
+    background: var(--color-blanco);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+}
+
+.quick-links h2 {
+    color: var(--color-oscuro);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.quick-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--color-claro), #F8F9FA);
+    border-radius: var(--radio-borde);
+    text-decoration: none;
+    transition: var(--transicion);
+    border: 2px solid transparent;
+}
+
+.quick-link:hover {
+    background: linear-gradient(135deg, var(--color-primario), var(--color-acento));
+    color: var(--color-blanco);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-media);
+}
+
+.quick-link i {
+    font-size: 2rem;
+    color: var(--color-primario);
+}
+
+.quick-link:hover i {
+    color: var(--color-blanco);
+}
+
+.quick-link span {
+    font-weight: 600;
+    color: var(--color-oscuro);
+}
+
+.quick-link:hover span {
+    color: var(--color-blanco);
+}
+
+.no-data {
+    text-align: center;
+    color: var(--color-gris);
+    font-style: italic;
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .contacto-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .contacto-acciones {
+        justify-content: center;
+    }
+    
+    .links-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+{% endblock %}

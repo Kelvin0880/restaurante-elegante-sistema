@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Pedidos - Restaurante Elegante{% endblock %}
+
+{% block extra_css %}
+<!-- Estilos específicos para admin pedidos (como respaldo) -->
+<style>
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.filtros-admin {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.filtro-form {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+}
+
+.table-responsive {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.table-admin {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.table-admin thead {
+    background: var(--color-primario);
+    color: white;
+}
+
+.table-admin th,
+.table-admin td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.table-admin tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.cliente-info strong {
+    display: block;
+}
+
+.cliente-info small {
+    color: #6c757d;
+}
+
+.precio {
+    font-weight: bold;
+    color: var(--color-primario);
+}
+
+.estado {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.estado-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.estado-preparando {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.estado-listo {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.estado-entregado {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.estado-cancelado {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.acciones {
+    white-space: nowrap;
+}
+
+.acciones .btn {
+    margin-right: 0.5rem;
+}
+
+.no-pedidos {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.no-pedidos i {
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.form-estado-inline {
+    display: inline;
+}
+
+.select-estado {
+    width: auto;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .filtro-form {
+        flex-direction: column;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .table-admin {
+        min-width: 800px;
+    }
+    
+    .acciones {
+        min-width: 200px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="seccion">
+    <div class="container">
+        <div class="admin-header">
+            <h1 class="seccion-titulo">Gestión de Pedidos</h1>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secundario">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-admin">
+            <form method="get" class="filtro-form">
+                <div class="form-group">
+                    <label for="estado">Filtrar por Estado:</label>
+                    <select name="estado" id="estado" class="form-control" onchange="this.form.submit()">
+                        <option value="">Todos los estados</option>
+                        {% for valor, nombre in estados %}
+                            <option value="{{ valor }}" {% if estado_filtro == valor %}selected{% endif %}>
+                                {{ nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de pedidos -->
+        <div class="pedidos-admin">
+            {% if pedidos %}
+                <div class="table-responsive">
+                    <table class="table-admin">
+                        <thead>
+                            <tr>
+                                <th>ID Pedido</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pedido in pedidos %}
+                                <tr>
+                                    <td>#{{ pedido.id }}</td>
+                                    <td>
+                                        <div class="cliente-info">
+                                            <strong>{{ pedido.usuario.get_full_name|default:pedido.usuario.username }}</strong>
+                                            <small>{{ pedido.usuario.email }}</small>
+                                        </div>
+                                    </td>
+                                    <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+                                    <td>
+                                        <span class="precio">€{{ pedido.total|floatformat:2 }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="estado estado-{{ pedido.estado }}">
+                                            {{ pedido.get_estado_display }}
+                                        </span>
+                                    </td>
+                                    <td class="acciones">
+                                        <button type="button" class="btn btn-sm btn-info" onclick="verDetallesPedido({{ pedido.id }})">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </button>
+                                        <form method="post" action="{% url 'actualizar_estado_pedido' pedido.id %}" class="form-estado-inline">
+                                            {% csrf_token %}
+                                            <select name="estado" class="form-control form-control-sm select-estado" onchange="this.form.submit()" title="Cambiar estado del pedido #{{ pedido.id }}" aria-label="Estado del pedido {{ pedido.id }}">
+                                                {% for valor, nombre in estados %}
+                                                    <option value="{{ valor }}" {% if pedido.estado == valor %}selected{% endif %}>
+                                                        {{ nombre }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="no-pedidos">
+                    <i class="fas fa-inbox fa-3x"></i>
+                    <h3>No hay pedidos</h3>
+                    <p>{% if estado_filtro %}No se encontraron pedidos con el estado seleccionado.{% else %}Aún no hay pedidos registrados.{% endif %}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Modal para detalles del pedido -->
+<div class="modal fade" id="detallesPedidoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal" title="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="detallesPedidoContent">
+                <!-- Contenido cargado vía AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function verDetallesPedido(pedidoId) {
+    // Cargar detalles del pedido vía AJAX
+    fetch(`/admin/pedido/${pedidoId}/detalles/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('detallesPedidoContent').innerHTML = data.html;
+            new bootstrap.Modal(document.getElementById('detallesPedidoModal')).show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cargar los detalles del pedido');
+        });
+}
+</script>
+{% endblock %}

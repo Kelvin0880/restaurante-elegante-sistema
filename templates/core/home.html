@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Restaurante Elegante - Experiencia Gastronómica Única{% endblock %}
+
+{% block content %}
+<!-- Hero Section con Video -->
+<section class="hero">
+    <video class="hero-video" autoplay muted loop>
+        <source src="{% static 'videos/Mujeres tomando un cafe sentadas.mp4' %}" type="video/mp4">
+        Tu navegador no soporta videos HTML5.
+    </video>
+    
+    <div class="hero-content">
+        <h1 class="animate-on-scroll">Restaurante Elegante</h1>
+        <p class="animate-on-scroll">Una experiencia gastronómica única donde cada plato cuenta una historia y cada momento se convierte en un recuerdo especial.</p>
+        <div class="hero-buttons animate-on-scroll">
+            <a href="{% url 'menu' %}" class="btn btn-primario">Ver Nuestro Menú</a>
+            <a href="{% url 'contacto' %}" class="btn btn-secundario">Hacer Reserva</a>
+        </div>
+    </div>
+</section>
+
+<!-- Carrusel de Imágenes -->
+<section class="seccion">
+    <div class="container">
+        <h2 class="seccion-titulo animate-on-scroll">Descubre Nuestro Ambiente</h2>
+        
+        <div class="carousel animate-on-scroll">
+            <div class="carousel-container">
+                <div class="carousel-slide">
+                    <img src="{% static 'images/Restaurante por dentro.jpg' %}" alt="Interior elegante del restaurante">
+                    <div class="carousel-caption">
+                        <h3>Ambiente Sofisticado</h3>
+                        <p>Un interior diseñado para brindarte la mejor experiencia gastronómica</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-slide">
+                    <img src="{% static 'images/zona de bar.jpg' %}" alt="Zona de bar del restaurante">
+                    <div class="carousel-caption">
+                        <h3>Zona de Bar Exclusiva</h3>
+                        <p>Disfruta de nuestros cócteles artesanales en un ambiente único</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-slide">
+                    <img src="{% static 'images/Platillos.jpg' %}" alt="Variedad de platillos gourmet">
+                    <div class="carousel-caption">
+                        <h3>Platillos Gourmet</h3>
+                        <p>Cada plato es una obra de arte culinaria preparada con ingredientes selectos</p>
+                    </div>
+                </div>
+                
+                <div class="carousel-slide">
+                    <img src="{% static 'images/muchos platillos 2.jpg' %}" alt="Mesa con múltiples platillos">
+                    <div class="carousel-caption">
+                        <h3>Experiencia Compartida</h3>
+                        <p>Perfecto para celebraciones especiales y momentos inolvidables</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="carousel-nav carousel-prev" aria-label="Imagen anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-nav carousel-next" aria-label="Siguiente imagen">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="carousel-indicators"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Platos Destacados -->
+<section class="seccion seccion-clara">
+    <div class="container">
+        <h2 class="seccion-titulo animate-on-scroll">Platos Destacados</h2>
+        
+        {% if platos_destacados %}
+            <div class="platos-grid">
+                {% for plato in platos_destacados %}
+                    <div class="plato-card animate-on-scroll">
+                        {% if plato.imagen %}
+                            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}">
+                        {% else %}
+                            <img src="{% static 'images/platillo espaguetis.jpg' %}" alt="{{ plato.nombre }}">
+                        {% endif %}
+                        
+                        <div class="plato-info">
+                            <h3 class="plato-nombre">{{ plato.nombre }}</h3>
+                            <p class="plato-descripcion">{{ plato.descripcion|truncatewords:15 }}</p>
+                            <div class="plato-precio">€{{ plato.precio }}</div>
+                            
+                            <div class="plato-acciones">
+                                <a href="{% url 'menu' %}" class="btn btn-secundario">Ver Detalles</a>
+                                {% if user.is_authenticated and not user.is_staff %}
+                                    <button class="btn btn-primario btn-agregar-carrito" data-plato-id="{{ plato.id }}">
+                                        <i class="fas fa-cart-plus"></i> Agregar
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="texto-centrado">Próximamente tendremos platos disponibles.</p>
+        {% endif %}
+        
+        <div class="texto-centrado mt-4">
+            <a href="{% url 'menu' %}" class="btn btn-primario">Ver Menú Completo</a>
+        </div>
+    </div>
+</section>
+
+<!-- Video de Cocina -->
+<section class="seccion">
+    <div class="container">
+        <h2 class="seccion-titulo animate-on-scroll">Nuestros Chefs en Acción</h2>
+        
+        <div class="video-container animate-on-scroll">
+            <video controls poster="{% static 'images/pexels-valeriiamiller-3361170.jpg' %}" class="video-responsive">
+                <source src="{% static 'videos/Cocinando un cangrejo.mp4' %}" type="video/mp4">
+                Tu navegador no soporta videos HTML5.
+            </video>
+            
+            <div class="video-overlay">
+                <h3>Maestría Culinaria</h3>
+                <p>Observa cómo nuestros chefs preparan cada plato con técnicas tradicionales y toques modernos</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Noticias Recientes -->
+{% if noticias_recientes %}
+<section class="seccion seccion-clara">
+    <div class="container">
+        <h2 class="seccion-titulo animate-on-scroll">Últimas Noticias</h2>
+        
+        <div class="noticias-grid">
+            {% for noticia in noticias_recientes %}
+                <article class="noticia-card animate-on-scroll">
+                    {% if noticia.imagen %}
+                        <img src="{{ noticia.imagen.url }}" alt="{{ noticia.titulo }}">
+                    {% else %}
+                        <img src="{% static 'images/pexels-pixabay-271715.jpg' %}" alt="{{ noticia.titulo }}">
+                    {% endif %}
+                    
+                    <div class="noticia-content">
+                        <h3>{{ noticia.titulo }}</h3>
+                        <p class="noticia-meta">
+                            <i class="fas fa-calendar"></i> {{ noticia.fecha_publicacion|date:"d M Y" }}
+                            <i class="fas fa-user"></i> {{ noticia.autor.get_full_name|default:noticia.autor.username }}
+                        </p>
+                        <p>{{ noticia.contenido|truncatewords:20 }}</p>
+                        <a href="{{ noticia.get_absolute_url }}" class="btn btn-secundario">Leer Más</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        
+        <div class="texto-centrado mt-4">
+            <a href="{% url 'noticias' %}" class="btn btn-primario">Ver Todas las Noticias</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Llamada a la Acción -->
+<section class="seccion cta-section">
+    <div class="container">
+        <div class="cta-content animate-on-scroll">
+            <h2>¿Listo para una Experiencia Única?</h2>
+            <p>Reserva tu mesa y descubre por qué somos el restaurante más elegante de la ciudad</p>
+            <div class="cta-buttons">
+                <a href="{% url 'contacto' %}" class="btn btn-primario">Hacer Reserva</a>
+                <a href="{% url 'menu' %}" class="btn btn-secundario">Ver Menú</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.video-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: var(--radio-borde);
+    overflow: hidden;
+    box-shadow: var(--sombra-media);
+}
+
+.video-responsive {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.video-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: var(--color-blanco);
+    padding: 2rem;
+    text-align: center;
+}
+
+.noticias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.noticia-card {
+    background: var(--color-blanco);
+    border-radius: var(--radio-borde);
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicion);
+}
+
+.noticia-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-fuerte);
+}
+
+.noticia-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.noticia-content {
+    padding: 1.5rem;
+}
+
+.noticia-meta {
+    color: var(--color-gris);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.noticia-meta i {
+    margin-right: 0.5rem;
+    margin-left: 1rem;
+}
+
+.noticia-meta i:first-child {
+    margin-left: 0;
+}
+
+.cta-section {
+    background: linear-gradient(135deg, var(--color-oscuro), var(--color-secundario));
+    color: var(--color-blanco);
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-acento);
+}
+
+.cta-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons .btn {
+    margin: 0 1rem;
+}
+
+@media (max-width: 768px) {
+    .cta-content h2 {
+        font-size: 2rem;
+    }
+    
+    .cta-buttons .btn {
+        display: block;
+        margin: 0.5rem auto;
+        max-width: 250px;
+    }
+    
+    .noticias-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

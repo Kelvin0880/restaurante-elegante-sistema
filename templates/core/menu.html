@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Menú - Restaurante Elegante{% endblock %}
+
+{% block content %}
+<section class="seccion">
+    <div class="container">
+        <h1 class="seccion-titulo">Nuestro Menú</h1>
+        
+        <!-- Filtros y búsqueda -->
+        <div class="menu-filters">
+            <form method="get" class="filters-form">
+                <div class="filter-group">
+                    <input type="text" 
+                           name="q" 
+                           placeholder="Buscar platos..." 
+                           value="{{ busqueda }}"
+                           class="search-input">
+                    <button type="submit" class="btn btn-primario" title="Buscar platos">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="categories-filter">
+                    <a href="{% url 'menu' %}" 
+                       class="category-btn {% if not categoria_seleccionada %}active{% endif %}">
+                        Todos
+                    </a>
+                    {% for categoria in categorias %}
+                        <a href="?categoria={{ categoria.id }}" 
+                           class="category-btn {% if categoria_seleccionada == categoria.id|stringformat:'s' %}active{% endif %}">
+                            {{ categoria.nombre }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+        
+        <!-- Lista de platos -->
+        {% if platos %}
+            <div class="platos-grid">
+                {% for plato in platos %}
+                    <div class="plato-card animate-on-scroll">
+                        {% if plato.imagen %}
+                            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}">
+                        {% else %}
+                            <img src="{% static 'images/platillo espaguetis.jpg' %}" alt="{{ plato.nombre }}">
+                        {% endif %}
+                        
+                        <div class="plato-info">
+                            <h3 class="plato-nombre">{{ plato.nombre }}</h3>
+                            <p class="plato-categoria">
+                                <i class="fas fa-tag"></i> {{ plato.categoria.nombre }}
+                            </p>
+                            <p class="plato-descripcion">{{ plato.descripcion }}</p>
+                            <div class="plato-precio">€{{ plato.precio }}</div>
+                            
+                            {% if plato.disponible %}
+                                <div class="plato-acciones">
+                                    {% if user.is_authenticated and not user.is_staff %}
+                                        <button class="btn btn-primario btn-agregar-carrito" 
+                                                data-plato-id="{{ plato.id }}"
+                                                title="Agregar al carrito">
+                                            <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                                        </button>
+                                    {% elif not user.is_authenticated %}
+                                        <a href="{% url 'login' %}" class="btn btn-secundario">
+                                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión para Ordenar
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="plato-no-disponible">
+                                    <i class="fas fa-times-circle"></i> No Disponible
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>No se encontraron platos</h3>
+                {% if busqueda or categoria_seleccionada %}
+                    <p>Intenta con otros términos de búsqueda o categorías.</p>
+                    <a href="{% url 'menu' %}" class="btn btn-primario">Ver Todo el Menú</a>
+                {% else %}
+                    <p>Próximamente tendremos platos disponibles.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.menu-filters {
+    background: var(--color-blanco);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+    margin-bottom: 2rem;
+}
+
+.filter-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    max-width: 400px;
+    padding: 12px 15px;
+    border: 2px solid #E5E5E5;
+    border-radius: var(--radio-borde);
+    font-size: 1rem;
+    transition: var(--transicion);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+}
+
+.categories-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.category-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--color-primario);
+    border-radius: var(--radio-borde);
+    color: var(--color-primario);
+    text-decoration: none;
+    transition: var(--transicion);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background: var(--color-primario);
+    color: var(--color-blanco);
+}
+
+.plato-categoria {
+    color: var(--color-gris);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.plato-no-disponible {
+    background: var(--color-peligro);
+    color: var(--color-blanco);
+    padding: 8px 12px;
+    border-radius: var(--radio-borde);
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--color-claro);
+    border-radius: var(--radio-borde);
+    margin-top: 2rem;
+}
+
+.no-results i {
+    font-size: 4rem;
+    color: var(--color-gris);
+    margin-bottom: 1rem;
+}
+
+.no-results h3 {
+    color: var(--color-oscuro);
+    margin-bottom: 1rem;
+}
+
+.no-results p {
+    color: var(--color-gris);
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .menu-filters {
+        padding: 1.5rem;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-input {
+        max-width: 100%;
+    }
+    
+    .categories-filter {
+        justify-content: center;
+    }
+    
+    .category-btn {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito de Compras - Restaurante Elegante{% endblock %}
+
+{% block content %}
+<section class="seccion">
+    <div class="container">
+        <h1 class="seccion-titulo">Mi Carrito</h1>
+        
+        {% if carrito.items.exists %}
+            <div class="carrito-container">
+                <div class="carrito-items">
+                    {% for item in carrito.items.all %}
+                        <div class="carrito-item">
+                            {% if item.plato.imagen %}
+                                <img src="{{ item.plato.imagen.url }}" alt="{{ item.plato.nombre }}">
+                            {% else %}
+                                <img src="{% static 'images/platillo espaguetis.jpg' %}" alt="{{ item.plato.nombre }}">
+                            {% endif %}
+                            
+                            <div class="carrito-info">
+                                <h3>{{ item.plato.nombre }}</h3>
+                                <p class="item-categoria">{{ item.plato.categoria.nombre }}</p>
+                                <p class="item-descripcion">{{ item.plato.descripcion|truncatewords:15 }}</p>
+                                <p class="item-precio">€{{ item.plato.precio }} cada uno</p>
+                            </div>
+                            
+                            <div class="carrito-acciones">
+                                <div class="cantidad-control">
+                                    <label for="cantidad-{{ item.id }}">Cantidad:</label>
+                                    <input type="number" 
+                                           id="cantidad-{{ item.id }}"
+                                           class="cantidad-input" 
+                                           data-item-id="{{ item.id }}"
+                                           value="{{ item.cantidad }}" 
+                                           min="0" 
+                                           max="10">
+                                </div>
+                                <div class="item-subtotal">
+                                    <strong class="subtotal">€{{ item.get_subtotal }}</strong>
+                                </div>
+                                <a href="{% url 'eliminar_del_carrito' item.id %}" 
+                                   class="btn-eliminar" 
+                                   title="Eliminar del carrito">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="carrito-resumen">
+                    <h3>Resumen del Pedido</h3>
+                    <div class="resumen-linea">
+                        <span>Subtotal:</span>
+                        <span class="carrito-total">€{{ carrito.get_total }}</span>
+                    </div>
+                    <div class="resumen-linea">
+                        <span>Impuestos (IVA 10%):</span>
+                        <span>€{% widthratio carrito.get_total 10 1 %}</span>
+                    </div>
+                    <div class="resumen-linea total">
+                        <span><strong>Total:</strong></span>
+                        <span><strong>€{% widthratio carrito.get_total 1 1.1 %}</strong></span>
+                    </div>
+                    
+                    <form method="post" action="{% url 'realizar_pedido' %}" class="pedido-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="notas">Notas especiales (opcional):</label>
+                            <textarea name="notas" 
+                                    id="notas" 
+                                    class="form-control" 
+                                    rows="3" 
+                                    placeholder="Alergias, preferencias de cocción, etc."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primario btn-block">
+                            <i class="fas fa-shopping-cart"></i> Realizar Pedido
+                        </button>
+                    </form>
+                    
+                    <a href="{% url 'menu' %}" class="btn btn-secundario btn-block">
+                        <i class="fas fa-arrow-left"></i> Seguir Comprando
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="carrito-vacio">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>Tu carrito está vacío</h3>
+                <p>¡Añade algunos de nuestros deliciosos platos!</p>
+                <a href="{% url 'menu' %}" class="btn btn-primario">
+                    <i class="fas fa-utensils"></i> Ver Menú
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.carrito-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.carrito-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.carrito-item {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 1.5rem;
+    background: var(--color-blanco);
+    padding: 1.5rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+    align-items: center;
+}
+
+.carrito-item img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: var(--radio-borde);
+}
+
+.carrito-info h3 {
+    color: var(--color-oscuro);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.item-categoria {
+    color: var(--color-primario);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.item-descripcion {
+    color: var(--color-gris);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-precio {
+    color: var(--color-oscuro);
+    font-weight: 600;
+}
+
+.carrito-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+    min-width: 150px;
+}
+
+.cantidad-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.cantidad-control label {
+    font-size: 0.9rem;
+    color: var(--color-gris);
+}
+
+.cantidad-input {
+    width: 60px;
+    text-align: center;
+    padding: 8px;
+    border: 2px solid #E5E5E5;
+    border-radius: 4px;
+}
+
+.item-subtotal {
+    font-size: 1.1rem;
+    color: var(--color-primario);
+}
+
+.btn-eliminar {
+    background: var(--color-peligro);
+    color: var(--color-blanco);
+    border: none;
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transicion);
+    text-decoration: none;
+}
+
+.btn-eliminar:hover {
+    background: #C82333;
+    transform: scale(1.1);
+}
+
+.carrito-resumen {
+    background: var(--color-blanco);
+    padding: 2rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.carrito-resumen h3 {
+    color: var(--color-oscuro);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.resumen-linea {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.resumen-linea.total {
+    border-top: 2px solid var(--color-primario);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+.pedido-form {
+    margin: 1.5rem 0;
+}
+
+.btn-block {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.carrito-vacio {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--color-claro);
+    border-radius: var(--radio-borde);
+    margin-top: 2rem;
+}
+
+.carrito-vacio i {
+    font-size: 4rem;
+    color: var(--color-gris);
+    margin-bottom: 1rem;
+}
+
+.carrito-vacio h3 {
+    color: var(--color-oscuro);
+    margin-bottom: 1rem;
+}
+
+.carrito-vacio p {
+    color: var(--color-gris);
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .carrito-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .carrito-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .carrito-item img {
+        justify-self: center;
+    }
+    
+    .carrito-acciones {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+    
+    .carrito-resumen {
+        position: static;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar cantidad en tiempo real
+    const cantidadInputs = document.querySelectorAll('.cantidad-input');
+    cantidadInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const itemId = this.getAttribute('data-item-id');
+            const cantidad = parseInt(this.value);
+            
+            // Llamar a la función de actualización definida en script.js
+            if (typeof actualizarCantidad === 'function') {
+                actualizarCantidad.call(this, { target: this });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Noticias - Restaurante Elegante{% endblock %}
+
+{% block content %}
+<section class="seccion">
+    <div class="container">
+        <h1 class="seccion-titulo">Noticias y Actualidades</h1>
+        <p class="texto-centrado">Mantente al día con las últimas novedades de nuestro restaurante</p>
+        
+        {% if noticias %}
+            <div class="noticias-grid">
+                {% for noticia in noticias %}
+                    <article class="noticia-card animate-on-scroll">
+                        {% if noticia.imagen %}
+                            <img src="{{ noticia.imagen.url }}" alt="{{ noticia.titulo }}">
+                        {% else %}
+                            <img src="{% static 'images/pexels-pixabay-271715.jpg' %}" alt="{{ noticia.titulo }}">
+                        {% endif %}
+                        
+                        <div class="noticia-content">
+                            <h2>{{ noticia.titulo }}</h2>
+                            <div class="noticia-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-calendar"></i> 
+                                    {{ noticia.fecha_publicacion|date:"d F Y" }}
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-user"></i> 
+                                    {{ noticia.autor.get_full_name|default:noticia.autor.username }}
+                                </span>
+                            </div>
+                            <p class="noticia-excerpt">{{ noticia.contenido|truncatewords:30 }}</p>
+                            <a href="{{ noticia.get_absolute_url }}" class="btn btn-primario">
+                                <i class="fas fa-arrow-right"></i> Leer Más
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-noticias">
+                <i class="fas fa-newspaper"></i>
+                <h3>No hay noticias disponibles</h3>
+                <p>Próximamente publicaremos las últimas novedades de nuestro restaurante.</p>
+                <a href="{% url 'home' %}" class="btn btn-primario">Volver al Inicio</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.noticias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.noticia-card {
+    background: var(--color-blanco);
+    border-radius: var(--radio-borde);
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicion);
+}
+
+.noticia-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-fuerte);
+}
+
+.noticia-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.noticia-content {
+    padding: 2rem;
+}
+
+.noticia-content h2 {
+    color: var(--color-oscuro);
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    line-height: 1.3;
+}
+
+.noticia-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.meta-item {
+    color: var(--color-gris);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.meta-item i {
+    color: var(--color-primario);
+}
+
+.noticia-excerpt {
+    color: var(--color-gris);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.no-noticias {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--color-claro);
+    border-radius: var(--radio-borde);
+    margin-top: 2rem;
+}
+
+.no-noticias i {
+    font-size: 4rem;
+    color: var(--color-gris);
+    margin-bottom: 1rem;
+}
+
+.no-noticias h3 {
+    color: var(--color-oscuro);
+    margin-bottom: 1rem;
+}
+
+.no-noticias p {
+    color: var(--color-gris);
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 768px) {
+    .noticias-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .noticia-content {
+        padding: 1.5rem;
+    }
+    
+    .noticia-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% load static %}
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fas fa-utensils"></i>
+                Restaurante Elegante
+            </a>
+        </div>
+        <ul class="nav-menu">
+            <li>
+                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'menu' %}" class="{% if request.resolver_match.url_name == 'menu' %}active{% endif %}">
+                    <i class="fas fa-book-open"></i> Menú
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'noticias' %}" class="{% if request.resolver_match.url_name == 'noticias' %}active{% endif %}">
+                    <i class="fas fa-newspaper"></i> Noticias
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'contacto' %}" class="{% if request.resolver_match.url_name == 'contacto' %}active{% endif %}">
+                    <i class="fas fa-envelope"></i> Contacto
+                </a>
+            </li>
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'carrito' %}">
+                        <i class="fas fa-shopping-cart"></i> Carrito
+                        <span class="carrito-count carrito-count-hidden">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'mis_pedidos' %}">
+                        <i class="fas fa-list"></i> Mis Pedidos
+                    </a>
+                </li>
+                {% if user.is_staff %}
+                    <li>
+                        <a href="{% url 'admin_dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'admin:index' %}">
+                            <i class="fas fa-cog"></i> Admin
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="user-menu">
+                    <a href="#" class="user-toggle">
+                        <i class="fas fa-user"></i> 
+                        {{ user.get_full_name|default:user.username }}
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="user-dropdown">
+                        <a href="#"><i class="fas fa-user-edit"></i> Mi Perfil</a>
+                        <form method="post" action="{% url 'custom_logout' %}" class="logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{% url 'login' %}">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'registro' %}" class="btn-primario">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+        
+        <button class="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- CSS adicional para el menú de usuario -->
+<style>
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--color-blanco);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-media);
+    min-width: 200px;
+    display: none;
+    z-index: 1000;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--color-oscuro);
+    border-bottom: 1px solid #E5E5E5;
+    transition: var(--transicion);
+}
+
+.user-dropdown a:last-child {
+    border-bottom: none;
+}
+
+.user-dropdown a:hover {
+    background: var(--color-claro);
+    color: var(--color-primario);
+}
+
+.logout-form {
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.logout-btn {
+    width: 100%;
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--color-oscuro);
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transicion);
+    font-size: 1rem;
+}
+
+.logout-btn:hover {
+    background: var(--color-claro);
+    color: var(--color-primario);
+}
+
+.logout-btn i {
+    margin-right: 0.5rem;
+}
+
+.user-menu:hover .user-dropdown {
+    display: block;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--color-claro);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--color-oscuro);
+        flex-direction: column;
+        padding: 1rem 0;
+        display: none;
+    }
+    
+    .nav-menu.active {
+        display: flex;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .user-dropdown {
+        position: static;
+        background: transparent;
+        box-shadow: none;
+        display: block;
+        margin-top: 0.5rem;
+    }
+    
+    .user-dropdown a {
+        color: var(--color-claro);
+        border-bottom: 1px solid rgba(245, 245, 220, 0.2);
+        padding-left: 2rem;
+    }
+}
+</style>
+
+<!-- JavaScript para menú móvil -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (mobileToggle && navMenu) {
+        mobileToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+        });
+        
+        // Cerrar menú al hacer clic en un enlace (pero no en forms)
+        const navLinks = navMenu.querySelectorAll('a:not(.logout-btn)');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+    }
+    
+    // Handle logout form submission
+    const logoutForm = document.querySelector('.logout-form');
+    if (logoutForm) {
+        logoutForm.addEventListener('submit', function(e) {
+            // Let the form submit normally
+            console.log('Logout form submitted');
+        });
+    }
+    
+    // Actualizar contador del carrito si existe
+    updateCartCount();
+});
+
+function updateCartCount() {
+    // Esta función se puede llamar desde AJAX para actualizar el contador
+    const cartCount = document.querySelector('.carrito-count');
+    if (cartCount) {
+        // Aquí podrías hacer una llamada AJAX para obtener el número real de items
+        // Por ahora lo mantenemos oculto hasta que se agregue algo
+    }
+}
+</script>

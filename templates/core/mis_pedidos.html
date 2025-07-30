@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Pedidos - Restaurante Elegante{% endblock %}
+
+{% block content %}
+<section class="seccion">
+    <div class="container">
+        <h1 class="seccion-titulo">Mis Pedidos</h1>
+        
+        {% if pedidos %}
+            <div class="pedidos-lista">
+                {% for pedido in pedidos %}
+                    <div class="pedido-card">
+                        <div class="pedido-header">
+                            <div class="pedido-info">
+                                <h3>Pedido #{{ pedido.id }}</h3>
+                                <p class="pedido-fecha">
+                                    <i class="fas fa-calendar"></i> 
+                                    {{ pedido.fecha_pedido|date:"d F Y, H:i" }}
+                                </p>
+                            </div>
+                            <div class="pedido-estado">
+                                <span class="estado-badge estado-{{ pedido.estado }}">
+                                    {% if pedido.estado == 'pendiente' %}
+                                        <i class="fas fa-clock"></i> Pendiente
+                                    {% elif pedido.estado == 'confirmado' %}
+                                        <i class="fas fa-check"></i> Confirmado
+                                    {% elif pedido.estado == 'en_preparacion' %}
+                                        <i class="fas fa-utensils"></i> En Preparación
+                                    {% elif pedido.estado == 'listo' %}
+                                        <i class="fas fa-bell"></i> Listo
+                                    {% elif pedido.estado == 'entregado' %}
+                                        <i class="fas fa-check-circle"></i> Entregado
+                                    {% elif pedido.estado == 'cancelado' %}
+                                        <i class="fas fa-times-circle"></i> Cancelado
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="pedido-items">
+                            {% for item in pedido.items.all %}
+                                <div class="pedido-item">
+                                    <span class="item-cantidad">{{ item.cantidad }}x</span>
+                                    <span class="item-nombre">{{ item.plato.nombre }}</span>
+                                    <span class="item-precio">€{{ item.get_subtotal }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if pedido.notas %}
+                            <div class="pedido-notas">
+                                <strong>Notas:</strong> {{ pedido.notas }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="pedido-footer">
+                            <div class="pedido-total">
+                                <strong>Total: €{{ pedido.total }}</strong>
+                            </div>
+                            <div class="pedido-acciones">
+                                {% if pedido.estado == 'pendiente' %}
+                                    <span class="estado-ayuda">
+                                        <i class="fas fa-info-circle"></i>
+                                        Tu pedido está siendo procesado
+                                    </span>
+                                {% elif pedido.estado == 'confirmado' %}
+                                    <span class="estado-ayuda">
+                                        <i class="fas fa-thumbs-up"></i>
+                                        Pedido confirmado, preparándose
+                                    </span>
+                                {% elif pedido.estado == 'en_preparacion' %}
+                                    <span class="estado-ayuda">
+                                        <i class="fas fa-fire"></i>
+                                        Nuestros chefs están preparando tu pedido
+                                    </span>
+                                {% elif pedido.estado == 'listo' %}
+                                    <span class="estado-ayuda estado-destacado">
+                                        <i class="fas fa-bell"></i>
+                                        ¡Tu pedido está listo para recoger!
+                                    </span>
+                                {% elif pedido.estado == 'entregado' %}
+                                    <span class="estado-ayuda">
+                                        <i class="fas fa-heart"></i>
+                                        ¡Esperamos que hayas disfrutado tu comida!
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-pedidos">
+                <i class="fas fa-receipt"></i>
+                <h3>No tienes pedidos aún</h3>
+                <p>¡Haz tu primer pedido y disfruta de nuestra deliciosa comida!</p>
+                <a href="{% url 'menu' %}" class="btn btn-primario">
+                    <i class="fas fa-utensils"></i> Ver Menú
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.pedidos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.pedido-card {
+    background: var(--color-blanco);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-suave);
+    overflow: hidden;
+    transition: var(--transicion);
+}
+
+.pedido-card:hover {
+    box-shadow: var(--sombra-media);
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--color-claro), #F8F9FA);
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.pedido-info h3 {
+    color: var(--color-oscuro);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.pedido-fecha {
+    color: var(--color-gris);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.estado-badge {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radio-borde);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.estado-pendiente {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.estado-confirmado {
+    background: #D1ECF1;
+    color: #0C5460;
+}
+
+.estado-en_preparacion {
+    background: #F8D7DA;
+    color: #721C24;
+}
+
+.estado-listo {
+    background: #D4EDDA;
+    color: #155724;
+    animation: pulse 2s infinite;
+}
+
+.estado-entregado {
+    background: #E2E3E5;
+    color: #383D41;
+}
+
+.estado-cancelado {
+    background: #F5C6CB;
+    color: #721C24;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pedido-items {
+    padding: 1.5rem;
+}
+
+.pedido-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #F8F9FA;
+}
+
+.pedido-item:last-child {
+    border-bottom: none;
+}
+
+.item-cantidad {
+    font-weight: 600;
+    color: var(--color-primario);
+    min-width: 40px;
+}
+
+.item-nombre {
+    flex: 1;
+    margin: 0 1rem;
+    color: var(--color-oscuro);
+}
+
+.item-precio {
+    font-weight: 600;
+    color: var(--color-oscuro);
+}
+
+.pedido-notas {
+    padding: 1rem 1.5rem;
+    background: var(--color-claro);
+    border-top: 1px solid #E5E5E5;
+    color: var(--color-gris);
+    font-style: italic;
+}
+
+.pedido-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: var(--color-claro);
+    border-top: 1px solid #E5E5E5;
+}
+
+.pedido-total {
+    font-size: 1.2rem;
+    color: var(--color-oscuro);
+}
+
+.estado-ayuda {
+    color: var(--color-gris);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.estado-destacado {
+    color: var(--color-exito);
+    font-weight: 600;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 5px rgba(40, 167, 69, 0.5); }
+    to { text-shadow: 0 0 10px rgba(40, 167, 69, 0.8); }
+}
+
+.no-pedidos {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--color-claro);
+    border-radius: var(--radio-borde);
+    margin-top: 2rem;
+}
+
+.no-pedidos i {
+    font-size: 4rem;
+    color: var(--color-gris);
+    margin-bottom: 1rem;
+}
+
+.no-pedidos h3 {
+    color: var(--color-oscuro);
+    margin-bottom: 1rem;
+}
+
+.no-pedidos p {
+    color: var(--color-gris);
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .pedido-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .pedido-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .pedido-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}

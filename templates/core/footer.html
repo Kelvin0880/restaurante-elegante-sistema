@@ -1,0 +1,180 @@
+{% load static %}
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <!-- Información del restaurante -->
+            <div class="footer-section">
+                <h3><i class="fas fa-utensils"></i> Restaurante Elegante</h3>
+                <p>Disfruta de una experiencia gastronómica única con los mejores platos y ambiente sofisticado en el corazón de la ciudad.</p>
+                <div class="redes-sociales">
+                    <a href="https://facebook.com" target="_blank" class="red-social" rel="noopener noreferrer" title="Síguenos en Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" class="red-social" rel="noopener noreferrer" title="Síguenos en Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" class="red-social" rel="noopener noreferrer" title="Síguenos en Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" class="red-social" rel="noopener noreferrer" title="Síguenos en LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com" target="_blank" class="red-social" rel="noopener noreferrer" title="Visita nuestro GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Enlaces rápidos -->
+            <div class="footer-section">
+                <h3><i class="fas fa-link"></i> Enlaces Rápidos</h3>
+                <a href="{% url 'home' %}"><i class="fas fa-home"></i> Inicio</a>
+                <a href="{% url 'menu' %}"><i class="fas fa-book-open"></i> Nuestro Menú</a>
+                <a href="{% url 'noticias' %}"><i class="fas fa-newspaper"></i> Noticias</a>
+                <a href="{% url 'contacto' %}"><i class="fas fa-envelope"></i> Contacto</a>
+                <a href="{% url 'privacidad' %}"><i class="fas fa-shield-alt"></i> Política de Privacidad</a>
+            </div>
+            
+            <!-- Información de contacto -->
+            <div class="footer-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Información de Contacto</h3>
+                <div class="contact-info">
+                    <p><i class="fas fa-map-marker-alt"></i> Calle Elegante 123, Madrid, España</p>
+                    <p><i class="fas fa-phone"></i> +34 912 345 678</p>
+                    <p><i class="fas fa-envelope"></i> info@restauranteelegante.com</p>
+                    <p><i class="fas fa-clock"></i> Lun-Dom: 12:00 - 24:00</p>
+                </div>
+            </div>
+            
+            <!-- Newsletter -->
+            <div class="footer-section">
+                <h3><i class="fas fa-bell"></i> Newsletter</h3>
+                <p>Suscríbete para recibir nuestras últimas noticias y ofertas especiales.</p>
+                <form class="newsletter-form" action="#" method="post">
+                    {% csrf_token %}
+                    <div class="newsletter-input-group">
+                        <input type="email" name="email" placeholder="Tu email" class="newsletter-input" required>
+                        <button type="submit" class="newsletter-btn" title="Suscribirse al newsletter">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Footer bottom -->
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} Restaurante Elegante. Todos los derechos reservados.</p>
+           
+        </div>
+    </div>
+</footer>
+
+<!-- CSS adicional para el footer -->
+<style>
+.contact-info p {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-info i {
+    width: 20px;
+    color: var(--color-acento);
+}
+
+.newsletter-form {
+    margin-top: 1rem;
+}
+
+.newsletter-input-group {
+    display: flex;
+    border-radius: var(--radio-borde);
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    background: var(--color-blanco);
+    font-size: 1rem;
+}
+
+.newsletter-input:focus {
+    outline: none;
+}
+
+.newsletter-btn {
+    background: var(--color-primario);
+    color: var(--color-blanco);
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: var(--transicion);
+}
+
+.newsletter-btn:hover {
+    background: var(--color-acento);
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .redes-sociales {
+        margin-top: 1rem;
+    }
+    
+    .newsletter-input-group {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}
+</style>
+
+<!-- JavaScript para newsletter -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newsletterForm = document.querySelector('.newsletter-form');
+    
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = this.querySelector('input[name="email"]').value;
+            const btn = this.querySelector('.newsletter-btn');
+            const originalHTML = btn.innerHTML;
+            
+            // Mostrar loading
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+            
+            // Simular envío (aquí podrías hacer una llamada AJAX real)
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.style.background = 'var(--color-exito)';
+                
+                // Mostrar mensaje de éxito
+                if (typeof showAlert === 'function') {
+                    showAlert('¡Suscripción exitosa! Gracias por unirte a nuestro newsletter.', 'success');
+                }
+                
+                // Resetear formulario
+                this.reset();
+                
+                // Restaurar botón después de 2 segundos
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                }, 2000);
+            }, 1500);
+        });
+    }
+});
+</script>

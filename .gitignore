@@ -1,0 +1,105 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Entorno virtual
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+restaurante_env/
+
+# Base de datos SQLite
+*.sqlite3
+db.sqlite3
+
+# Archivos de medios subidos por usuarios
+media/
+
+# Archivos estáticos recopilados
+staticfiles/
+
+# Variables de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de configuración del IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos del sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de backup
+*.bak
+*.backup
+
+# Archivos de configuración específicos del entorno
+local_settings.py
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Archivos que no deben ir al repositorio
+# (para que la profesora siga el tutorial completo)
+# - Sin base de datos (debe crearla)
+# - Sin entorno virtual (debe crearlo)
+# - Sin archivos estáticos recopilados (debe ejecutar collectstatic)
+# - Sin archivos de media subidos (se generan al usar el sistema)
