@@ -37,13 +37,13 @@ Debe mostrar Python 3.8 o superior.
 
 ### Paso 1: Descargar el Proyecto
 **Opción A: Descargar ZIP**
-1. Ve al repositorio: `https://github.com/TU-USUARIO/restaurante-elegante-sistema](https://github.com/Kelvin0880/restaurante-elegante-sistema.git`
+1. Ve al repositorio: `https://github.com/Kelvin0880/restaurante-elegante-sistema.git`
 2. Haz clic en el botón verde "Code" → "Download ZIP"
 3. Extrae el archivo ZIP a una carpeta (ejemplo: `C:\RestauranteElegante`)
 
 **Opción B: Clonar con Git**
 ```powershell
-git clone https://github.com/TU-USUARIO/restaurante-elegante-sistema.git](https://github.com/Kelvin0880/restaurante-elegante-sistema.git
+git clone https://github.com/Kelvin0880/restaurante-elegante-sistema.git
 cd restaurante-elegante-sistema
 ```
 
