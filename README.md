@@ -51,7 +51,7 @@ cd restaurante-elegante-sistema
 1. **Abrir PowerShell en Visual studio code**
 2. **Navegar al directorio del proyecto**
 ```powershell
-cd "C:\RestauranteElegante" o si lo dejaste igual cd restaurante-elegante-sistema
+cd "C:\RestauranteElegante" o si lo dejaste igual cd restaurante-elegante-sistema, tambien esto se pondra automaticamente si abres la terminal desde visual studio code.
 ```
 ```
 
