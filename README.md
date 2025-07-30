@@ -35,39 +35,54 @@ Debe mostrar Python 3.8 o superior.
 
 ## 📦 Instalación y Configuración (PowerShell)
 
-### Paso 1: Preparar el Entorno
-1. **Extraer el proyecto** a una carpeta (ejemplo: `C:\RestauranteElegante`)
-2. **Abrir PowerShell como Administrador**
+### Paso 1: Descargar el Proyecto
+**Opción A: Descargar ZIP**
+1. Ve al repositorio: `https://github.com/TU-USUARIO/restaurante-elegante-sistema`
+2. Haz clic en el botón verde "Code" → "Download ZIP"
+3. Extrae el archivo ZIP a una carpeta (ejemplo: `C:\RestauranteElegante`)
+
+**Opción B: Clonar con Git**
+```powershell
+git clone https://github.com/TU-USUARIO/restaurante-elegante-sistema.git
+cd restaurante-elegante-sistema
 ```
 
-### Paso 2: Configurar Política de Ejecución (Si es necesario)
+### Paso 2: Preparar el Entorno
+1. **Abrir PowerShell como Administrador**
+2. **Navegar al directorio del proyecto**
+```powershell
+cd "C:\RestauranteElegante"
+```
+```
+
+### Paso 3: Configurar Política de Ejecución (Si es necesario)
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-### Paso 3: Crear Entorno Virtual
+### Paso 4: Crear Entorno Virtual
 ```powershell
 python -m venv venv
 ```
 
-### Paso 4: Activar Entorno Virtual
+### Paso 5: Activar Entorno Virtual
 ```powershell
 .\venv\Scripts\Activate.ps1
 ```
 **Nota**: Verás que aparece `(venv)` al inicio de la línea del comando.
 
-### Paso 5: Instalar Dependencias
+### Paso 6: Instalar Dependencias
 ```powershell
 .\venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### Paso 6: Configurar Base de Datos
+### Paso 7: Configurar Base de Datos
 ```powershell
 .\venv\Scripts\python.exe manage.py makemigrations
 .\venv\Scripts\python.exe manage.py migrate
 ```
 
-### Paso 7: Crear Usuario Administrador
+### Paso 8: Crear Usuario Administrador
 ```powershell
 .\venv\Scripts\python.exe crear_admin.py
 ```
@@ -75,17 +90,17 @@ python -m venv venv
 - Usuario: `admin`
 - Contraseña: `admin123`
 
-### Paso 8: Poblar Base de Datos con Datos de Prueba
+### Paso 9: Poblar Base de Datos con Datos de Prueba
 ```powershell
 .\venv\Scripts\python.exe populate_data.py
 ```
 
-### Paso 9: Recopilar Archivos Estáticos
+### Paso 10: Recopilar Archivos Estáticos
 ```powershell
 .\venv\Scripts\python.exe manage.py collectstatic --noinput
 ```
 
-### Paso 10: Iniciar Servidor de Desarrollo
+### Paso 11: Iniciar Servidor de Desarrollo
 ```powershell
 .\venv\Scripts\python.exe manage.py runserver 8000
 ```
