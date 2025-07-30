@@ -39,7 +39,7 @@ Debe mostrar Python 3.8 o superior.
 **Opción A: Descargar ZIP**
 1. Ve al repositorio: `https://github.com/Kelvin0880/restaurante-elegante-sistema.git`
 2. Haz clic en el botón verde "Code" → "Download ZIP"
-3. Extrae el archivo ZIP a una carpeta (ejemplo: `C:\RestauranteElegante`)
+3. Extrae el archivo ZIP a una carpeta (ejemplo: `C:\RestauranteElegante`) o dejarlo en la que estaba y ya esta 
 
 **Opción B: Clonar con Git**
 ```powershell
@@ -48,10 +48,10 @@ cd restaurante-elegante-sistema
 ```
 
 ### Paso 2: Preparar el Entorno
-1. **Abrir PowerShell como Administrador**
+1. **Abrir PowerShell en Visual studio code**
 2. **Navegar al directorio del proyecto**
 ```powershell
-cd "C:\RestauranteElegante"
+cd "C:\RestauranteElegante" o si lo dejaste igual cd restaurante-elegante-sistema
 ```
 ```
 
