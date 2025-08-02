@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Favicon - Restaurante Elegante</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .favicon-preview {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            background: #8B4513;
+            color: white;
+            border-radius: 8px;
+            margin: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .favicon-preview:hover {
+            transform: scale(1.1);
+        }
+        .favicon-preview i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+        }
+        .favicon-preview.selected {
+            border: 3px solid #D4AF37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+        .size-preview {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        .size-label {
+            font-weight: bold;
+            width: 100px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 5px;
+        }
+        button {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #654321;
+        }
+        .color-options {
+            margin: 20px 0;
+        }
+        .color-box {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 5px;
+        }
+        .color-box.selected {
+            border-color: #333;
+        }
+        .instructions {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Generador de Favicon - Restaurante Elegante</h1>
+        
+        <div class="instructions">
+            <h3>📋 Instrucciones:</h3>
+            <ol>
+                <li>Selecciona un icono que represente tu restaurante</li>
+                <li>Elige un color de fondo</li>
+                <li>Haz clic en "Generar Favicon"</li>
+                <li>Descarga el archivo y reemplaza el favicon.ico en tu proyecto</li>
+            </ol>
+        </div>
+
+        <h3>🎨 Selecciona un Icono:</h3>
+        <div id="iconos">
+            <div class="favicon-preview" data-icon="fas fa-utensils">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-pizza-slice">
+                <i class="fas fa-pizza-slice"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-wine-glass">
+                <i class="fas fa-wine-glass"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-hamburger">
+                <i class="fas fa-hamburger"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-coffee">
+                <i class="fas fa-coffee"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-cocktail">
+                <i class="fas fa-cocktail"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-birthday-cake">
+                <i class="fas fa-birthday-cake"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-cookie-bite">
+                <i class="fas fa-cookie-bite"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-fish">
+                <i class="fas fa-fish"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-apple-alt">
+                <i class="fas fa-apple-alt"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-cheese">
+                <i class="fas fa-cheese"></i>
+            </div>
+            <div class="favicon-preview" data-icon="fas fa-mortar-pestle">
+                <i class="fas fa-mortar-pestle"></i>
+            </div>
+        </div>
+
+        <h3>🎨 Selecciona Color de Fondo:</h3>
+        <div class="color-options">
+            <div class="color-box selected" style="background: #8B4513" data-color="#8B4513"></div>
+            <div class="color-box" style="background: #D4AF37" data-color="#D4AF37"></div>
+            <div class="color-box" style="background: #CD853F" data-color="#CD853F"></div>
+            <div class="color-box" style="background: #A0522D" data-color="#A0522D"></div>
+            <div class="color-box" style="background: #800000" data-color="#800000"></div>
+            <div class="color-box" style="background: #2F4F4F" data-color="#2F4F4F"></div>
+            <div class="color-box" style="background: #1C1C1C" data-color="#1C1C1C"></div>
+            <div class="color-box" style="background: #4A4A4A" data-color="#4A4A4A"></div>
+        </div>
+
+        <h3>👁️ Vista Previa:</h3>
+        <div class="size-preview">
+            <span class="size-label">16x16:</span>
+            <canvas id="favicon16" width="16" height="16"></canvas>
+            <span class="size-label">32x32:</span>
+            <canvas id="favicon32" width="32" height="32"></canvas>
+            <span class="size-label">64x64:</span>
+            <canvas id="favicon64" width="64" height="64"></canvas>
+        </div>
+
+        <button onclick="generarFavicon()">🚀 Generar Favicon</button>
+        <button onclick="descargarFavicon()">📥 Descargar favicon.ico</button>
+        
+        <div id="resultado" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        let iconoSeleccionado = 'fas fa-utensils';
+        let colorSeleccionado = '#8B4513';
+
+        // Seleccionar icono
+        document.querySelectorAll('.favicon-preview').forEach(preview => {
+            preview.addEventListener('click', function() {
+                document.querySelectorAll('.favicon-preview').forEach(p => p.classList.remove('selected'));
+                this.classList.add('selected');
+                iconoSeleccionado = this.dataset.icon;
+                actualizarVistPrevia();
+            });
+        });
+
+        // Seleccionar color
+        document.querySelectorAll('.color-box').forEach(colorBox => {
+            colorBox.addEventListener('click', function() {
+                document.querySelectorAll('.color-box').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                colorSeleccionado = this.dataset.color;
+                actualizarColoresFavicon();
+                actualizarVistPrevia();
+            });
+        });
+
+        function actualizarColoresFavicon() {
+            document.querySelectorAll('.favicon-preview').forEach(preview => {
+                preview.style.background = colorSeleccionado;
+            });
+        }
+
+        function actualizarVistPrevia() {
+            [16, 32, 64].forEach(size => {
+                const canvas = document.getElementById(`favicon${size}`);
+                const ctx = canvas.getContext('2d');
+                
+                // Limpiar canvas
+                ctx.clearRect(0, 0, size, size);
+                
+                // Fondo
+                ctx.fillStyle = colorSeleccionado;
+                ctx.fillRect(0, 0, size, size);
+                
+                // Texto del icono (simulación)
+                ctx.fillStyle = 'white';
+                ctx.font = `${size * 0.6}px FontAwesome`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Icono Unicode para diferentes iconos
+                let iconText = '🍴'; // Default
+                if (iconoSeleccionado.includes('pizza')) iconText = '🍕';
+                else if (iconoSeleccionado.includes('wine')) iconText = '🍷';
+                else if (iconoSeleccionado.includes('hamburger')) iconText = '🍔';
+                else if (iconoSeleccionado.includes('coffee')) iconText = '☕';
+                else if (iconoSeleccionado.includes('cocktail')) iconText = '🍸';
+                else if (iconoSeleccionado.includes('cake')) iconText = '🎂';
+                else if (iconoSeleccionado.includes('cookie')) iconText = '🍪';
+                else if (iconoSeleccionado.includes('fish')) iconText = '🐟';
+                else if (iconoSeleccionado.includes('apple')) iconText = '🍎';
+                else if (iconoSeleccionado.includes('cheese')) iconText = '🧀';
+                
+                ctx.fillText(iconText, size/2, size/2);
+            });
+        }
+
+        function generarFavicon() {
+            actualizarVistPrevia();
+            document.getElementById('resultado').innerHTML = `
+                <div style="background: #d4edda; padding: 15px; border-radius: 5px; color: #155724;">
+                    <h4>✅ Favicon Generado!</h4>
+                    <p>Tu favicon ha sido generado con el icono <strong>${iconoSeleccionado}</strong> y color <strong>${colorSeleccionado}</strong>.</p>
+                    <p>Haz clic en "Descargar favicon.ico" para obtener el archivo.</p>
+                </div>
+            `;
+        }
+
+        function descargarFavicon() {
+            const canvas = document.getElementById('favicon32');
+            const link = document.createElement('a');
+            link.download = 'favicon.ico';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Inicializar
+        document.querySelector('.favicon-preview').classList.add('selected');
+        actualizarVistPrevia();
+    </script>
+</body>
+</html>
